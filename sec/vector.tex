@@ -1,0 +1,164 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{vector}
+vectorはStandard Template Library(STL)によって提供される"動的配列"である．
+vectorをincludeすることで，\cdref{cd:vector}に示すように静的配列と同じように利用できる．
+テンプレートクラスのため，データ型を指定することでどのような型でも格納できる．
+\begin{lstlisting}[label=cd:vector,caption=Source of using vector]
+#include <vector>
+
+int main() {
+    std::vector<int> vec = {4, 2, 7};
+    vec[0]; // 4
+    vec[1]; // 2
+    vec[2]; // 7
+}
+\end{lstlisting}
+
+vectorの宣言の方法はいくつか種類がある．\cdref{cd:vector_first}にいくつかを記す．
+他にもmoveやiteratorを用いた方法やuniform initialization等があるが，
+やや難しいため本章では省略する．
+\begin{lstlisting}[label=cd:vector_first,caption=vector initialization]
+std::vector<int> vec;
+std::vector<int> vec(size);
+std::vector<int> vec(size, value);
+std::vector<int> vec = {v1, v2, ..., vn};
+std::vector<int> vec = vec2;
+\end{lstlisting}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{速度}
+vectorはランダムアクセスに特化している．
+そのため，配列サイズ(or最大サイズ)があらかじめ決まっておりランダムアクセスが必要な場合に使うべきである．
+以下に各操作のオーダを示す．
+\begin{description}
+    \item[ランダムアクセス(at)] $O(1)$
+    \item[挿入・削除(insert)] $O(N)$
+    \item[検索(find)] $O(N)$
+\end{description}
+
+以上のように特定環境下以外では欠点が目立つが，
+使い勝手は良いことので他のコンテナを知るまでは欠点を目を瞑って使い続けることになる．
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{メモリ領域の過剰確保}
+% http://d.hatena.ne.jp/ponkotuy/20111216/1324027752
+vectorは動的配列という仕様から宣言後の配列長変化を許可している．
+そのため，変化に対応できるように配列長より多く(配列長の2倍)のメモリ領域を確保してしまう．
+さらに，push\_back等を繰り返して多く確保したメモリ領域よりも多くの値を格納させようとすると，
+メモリの再確保が始まる(ランダムアクセスのためメモリ領域が連続する必要がある為)．
+メモリの再確保が行われると，現在格納されている値のコピーが発生してしまう．
+
+以上の問題からvectorを使う際は以下のことを必ず守るようにする．
+また，正しい使用例を\cdref{cd:vector_reserve}に示す．
+\begin{itemize}
+    \item resizeやreserveによりメモリ領域を明示的に確保する
+    \item 配列長を変化させない
+    \item 要素追加は添え字アクセスかreserve後のpush\_back等のみとする
+\end{itemize}
+
+\begin{lstlisting}[label=cd:vector_reserve,caption=Correct addition method]
+std::vector<int> v;
+// pattern 1
+v.reserve(size);
+v.push_back(value)
+// pattern 2
+v.resize(size);
+v[n] = value
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{解放されないメモリ}
+% https://clown.hatenablog.jp/entry/20090311/p1
+vectorは一度確保したメモリ領域はデストラクタが呼ばれるまでは解放しない．
+つまり，resize,erace,clearなどによって値を削除してもメモリは無駄に残り続けることとなる．
+そのため，vectorで値削除操作をした場合はメモリ解放操作を手動でしなければならない．
+以下に2つの手法を示す．
+ただし，そもそもvectorで上記methodを用いた値の削除は推奨されない．
+
+\subsubsection{swap技法}
+% http://tatsyblog.sakura.ne.jp/wordpress/programming/cpp/1177/
+swap技法はコピーコンストラクタによって強引にメモリ領域を再確保する手法である．
+\cdref{cd:vector_swap}にresize,clearをした場合のswap技法によるメモリ解放のコードを示す．
+\begin{lstlisting}[label=cd:vector_swap,caption=swap method]
+std::vector<int> v(10);
+v.resize(5);
+std::vector<int>(v).swap(v);
+
+v.clear();
+std::vector<int>().swap(v);
+\end{lstlisting}
+
+\subsubsection{shrink\_to\_fit(c++11)}
+shrink\_to\_fitはvectorのメモリ領域を配列長まで解放するメンバ関数である．
+内部ではswap技法と同様の操作が行われおり，move semanticsによって最適化されている．
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{emplacement(c++11)}
+emplacementはmove semanticsを用いた効率的な要素追加methodの総称である．
+vectorではemplace，emplace\_backというメンバ関数が用意されている．
+詳細は本節では省くが，要素のコピーが発生しないためpush\_back等よりも高速に要素を追加できる．
+\cdref{cd:vector_emplacement}に要素追加をemplacementに置き換えたコードを示す．
+\begin{lstlisting}[label=cd:vector_emplacement,caption=vector emplacement]
+std::vector<int> v;
+v.reserve(2);
+
+// v.push_back(1);
+v.emplace_back(1)
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{range-based for loops(c++11)}
+vectorの要素を走査する場合，要素のみを取り出しながらfor文を回すことが出来る．
+そういった機能を一般的にrange-based for loopsやfor each，拡張for文と呼ぶ．
+c++では\cdref{cd:vector_forEach}のような構文を用いることで実現できる．
+ただし，本章で説明は省くが，実際に使用する時は\cdref{cd:vector_forEach2}のように
+const参照渡し，右辺値渡しのどちらかを用いるのが望ましい(というよりそうしなければならない)．
+\begin{lstlisting}[label=cd:vector_forEach,caption=range-based for loops]
+std::vector<int> v{1, 2, 3};
+for(int x : v){
+    // func
+}
+\end{lstlisting}
+\begin{lstlisting}[label=cd:vector_forEach2,caption=true range-based for loops]
+std::vector<int> v{1, 2, 3};
+for(const int& x : v){
+    // func
+}
+for(int&& x : v){
+    // func
+}
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{要素ソート}
+STLにはvectorをソートする関数が標準で搭載されている．
+ソート関数はalgorithmに定義されているため，includeが必要である．
+よく用いるソートは以下の二つが定義されている．
+\begin{itemize}
+    \item sort(非安定ソート)
+    \item stable\_sort(安定ソート)
+\end{itemize}
+昇順ソートは\cdref{cd:vector_sort}のようにイテレータを渡すだけで実現できる．
+
+なお，オリジナル順序のソート(降順等)も可能であるが本節での説明は省略する．
+\begin{lstlisting}[label=cd:vector_sort,caption=vector value sorting]
+#include <algorithm>
+std::vector<int> v{1, 3, 1};
+sort(v.begin(), v.end());
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

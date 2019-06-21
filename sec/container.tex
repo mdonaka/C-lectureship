@@ -1,0 +1,178 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{コンテナ}
+C++では動的配列や双方向リスト等のデータ構造がStandard Template Library(STL)によって提供されており，
+それらをまとめてコンテナ(container)と呼ぶ．
+全てのコンテナはコンテナとして共通の仕組みを持っている．
+そのため，一つのコンテナの仕組みとデータ構造さえ理解すれば容易に他のコンテナを使用することが出来る．
+また，この仕組みからジェネリックプログラミングと相性が良い．
+
+本章ではまずコンテナの基礎となる共通理念(method等)について説明した後，
+代表的なコンテナをいくつか紹介する．
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{コンテナの機能}
+STLの全てのコンテナは前述したように共通の仕組みを持っている．
+本節ではその仕組みの一部を紹介する．
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{method}
+コンテナに共通で備わる代表的なmethodを\tbref{tb:container_method}に示す．
+コンテナによっては表に存在しないmethod(emplace\_back等)が存在することもある．
+しかし，ほとんどのコンテナは共通のmethodのみで十分な効果を発揮する．
+また，vectorにあるようなランダムアクセス([]演算子)は全てのコンテナに共通してはいないので
+注意する必要がある．
+
+なお，後述するコンテナの計算量は全てこれらのmethodの計算量を指す．
+\begin{table}[htbp]
+    \caption{Common methods of container}
+    \label{tb:container_method}
+    \begin{center}
+    \begin{tabular}{cc} \hline
+        name & Description \\ \hline \hline
+        empty & 空かどうか判定 \\ \hline
+        size & 要素数を返す \\ \hline
+        clear & 空にする \\ \hline
+        insert & 要素を挿入(copy/move) \\ \hline
+        emplace(C++11) & 要素を挿入(直接) \\ \hline
+        erase & 要素を削除 \\ \hline
+        find & 要素を検索 \\ \hline
+        begin & 先頭を指すイテレータ \\ \hline
+        end & 末尾の次を指すのイテレータ \\ \hline
+        rbegin & 末尾を指すイテレータ \\ \hline
+        rend & 先頭の前を指すイテレータ \\ \hline
+    \end{tabular}
+    \end{center}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{イテレータ}
+% http://program.station.ez-net.jp/special/handbook/cpp/stl/iterator-make.asp
+% https://qiita.com/yumetodo/items/245e94a0e85db9bf5cbb
+イテレータ(iterator)は配列やデータ構造の各要素を順番に辿るための概念である．
+C++におけるイテレータは大きく5種類存在する．
+本資料では混乱を避けるため，双方向イテレータ(Bidirectional Iterator)のみを考え，
+以下イテレータは全て双方向イテレータを指すものとする．
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsubsection{イテレータの操作}
+深追いしないのであれば，イテレータはポインタの拡張と思って構わない．
+そのため，\cdref{cd:iterator_use}のようにして扱うことが出来る．
+また，クラス型を参照する場合もポインタと同様にアロー演算子により要素にアクセスできる．
+\begin{lstlisting}[label=cd:iterator_use, caption=How to use iterator]
+std::vector<int> array = {1,2,3,4,5};
+
+auto itr = array.begin();
+*itr; // 1
+
+++itr;
+*itr; // 2
+
+*itr = 5;
+// array = {1,5,3,4,5};
+
+--itr;
+*itr; // 1
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsubsection{forによるコンテナ走査}
+コンテナではbegin関数で先頭のイテレータ，end関数で末尾の次のイテレータを取得できる．
+これらの関数とイテレータのインクリメントの特徴を組み合わせることで，
+\cdref{cd:iterator_for}のようにコンテナの要素を順番に参照することが出来る．
+\begin{lstlisting}[label=cd:iterator_for, caption=iterator on for method]
+std::vector<int> array = {1,2,3,4,5};
+
+for(auto itr = array.begin();itr != array.end(); ++itr){
+    *itr // 1,2,3,4,5を順番に取得
+}
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsubsection{foreachによるコンテナ走査(C++11)}
+C++11では\cdref{cd:iterator_for}のようなfor文を完結に記述できる構文が追加された．
+この構文はbegin関数とend関数が定義されているクラスにおいて，
+先頭イテレータから末尾イテレータまで走査してイテレータの指す値を提供する．
+値は任意の型で受け取ることができ，イテレータの要素の変更が必要な場合は右辺値渡し，
+そうでなければconst参照渡しするのが一般的である．
+\cdref{cd:iterator_for}を書き換えたコードを\cdref{cd:iterator_foreach}に示す．
+\begin{lstlisting}[label=cd:iterator_foreach, caption=iterator on foreach method]
+std::vector<int> array = {1,2,3,4,5};
+
+// old version
+for(auto itr = array.begin();itr != array.end(); ++itr){
+    *itr // 1,2,3,4,5を順番に取得
+}
+
+// new version
+for(const auto& x : array){
+    x //1,2,3,4,5を順番に取得
+}
+\end{lstlisting}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{コンテナの種類}
+% https://ja.cppreference.com/w/cpp/container
+% http://vivi.dyndns.org/tech/cpp/container.html
+C++ではコンテナとしていくつかのデータ構造を扱うことが出来る．
+それらの一覧を\tbref{tb:container_type}に示す．
+本説はこれらから代表的なコンテナをピックアップして説明する．
+\begin{table}[]
+    \begin{center}
+    \label{tb:container_type}
+    \caption{All kinds of containers}
+    \begin{tabular}{c|cc}
+    \hline
+    Container type & Name & Description \\ \hline \hline
+    \multirow{5}{*}{シーケンスコンテナ}          & array(C++11)               & 静的配列                       \\ \cline{2-3}
+                                        & vector              & 動的配列                       \\ \cline{2-3}
+                                        & deque               & 両端キュー                      \\ \cline{2-3}
+                                        & forward\_list(C++11)       & 単方向リスト                     \\ \cline{2-3}
+                                        & list                & 双方向リスト                     \\ \hline
+    \multirow{4}{*}{連想コンテナ，2分木}         & set                 & 順序付き集合                     \\ \cline{2-3}
+                                        & map                 & 連想配列                       \\ \cline{2-3}
+                                        & multiset            & 重複可能な順序付き集合                \\ \cline{2-3}
+                                        & multimap            & 重複可能な連想配列                  \\ \hline
+    \multirow{4}{*}{非順序連想コンテナ，ハッシュテーブル} & unordered\_set(C++11)      & ハッシュによる順序付き集合              \\ \cline{2-3}
+                                        & unordered\_map(C++11)      & ハッシュによる連想配列                \\ \cline{2-3}
+                                        & unordered\_multiset(C++11) & ハッシュによる重複可能な順序付き集合         \\ \cline{2-3}
+                                        & unordered\_multimap(C++11) & ハッシュによる重複可能な連想配列           \\ \hline
+    \multirow{3}{*}{コンテナアダプタ}           & stack               & スタック                       \\ \cline{2-3}
+                                        & queue               & キュー                        \\ \cline{2-3}
+                                        & priority\_queue     & 優先度付きキュー                   \\ \hline
+    スパン                                 & span(C++20)                &  \\ \hline
+    \end{tabular}
+    \end{center}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{vector}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{list}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{map}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{unordered\_map}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{テクニック}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{逆順走査}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{走査中の値削除}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{構造化束縛}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,8 @@
+other_file/*
+memo.txt
+*.aux
+*.bbl
+*.fbd_latexmk
+*.fls
+*.log
+*.synctex.gz
