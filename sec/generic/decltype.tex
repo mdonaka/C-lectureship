@@ -3,12 +3,30 @@
 decltypeは引数として受け取った値の型を返す指定子である．
 autoのように初期化子から型を推論して使うだけでなく，
 いつでも任意の変数を型を推論して使用することができる．
-実際の使用例を\cdref{cd:gen05}に示す．
+実際の使用例を\cdref{cd:gen07}に示す．
 \lstinputlisting[caption=example of decltype specifier,label=cd:gen07]{code/generic/07.cpp}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{}
-
-\lstinputlisting[caption=feature of decltype,label=cd:gen08]{code/generic/08.cpp}
-
-\lstinputlisting[caption=decltype specifier with qualification,label=cd:gen09]{code/generic/09.cpp}
+\subsection{修飾を伴うdecltype}
+decltypeはautoとは異なり，修飾も含めて全ての型を推論する．
+autoのように使用して値をコピーしたつもりだったが，
+参照を渡してしまってバグが起きた，
+等が考えられるので使用する場合は修飾も含めてよく確認するようにする．
+\lstinputlisting[caption=decltype specifier with qualification,label=cd:gen08]{code/generic/08.cpp}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{修飾外し}
+constで受け取った引数をdelctypeで推論する，
+参照で受け取った引数をdelctypeで推論するといったことはジェネリックプログラミングではよくあることである．
+しかしながら，ほとんどのケースではconstや参照が邪魔となり上手く機能しない．
+そこで，C++にはこういった修飾を外すためのクラスが容易されている．
+\lstinputlisting[caption=Reference and const deletion,label=cd:gen09]{code/generic/09.cpp}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{decltype(auto)(C++14)}
+値のコピーを初期化子の型に合わせて行う場合，
+autoやdecltype(初期化子)とする方法があるが，
+C++14ではdecltype(初期化子)をdecltype(auto)と記載できるようになった．
+これにより，参照やconstを維持したコピーを完結に記載できる．
+\lstinputlisting[caption=example of decltype(auto),label=cd:gen11]{code/generic/11.cpp}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

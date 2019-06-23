@@ -38,4 +38,12 @@ initializer listsは最も抽象化されたコンテナのようなものであ
 $\{1,2,3\}$のような列を型推論した場合に発生する．
 vector等のコンテナ型の初期化をautoと$\{\textrm{hoge},\textrm{huga}\}$を用いてする場合，
 コンテナを明示しなければ型がinitializer listsと判定されてしまうため注意が必要である．
-\lstinputlisting[caption=feature of A,label=cd:gen06]{code/generic/06.cpp}
+\lstinputlisting[caption=feature of initializer lists,label=cd:gen06]{code/generic/06.cpp}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{関数の戻り値型推論(C++14)}
+autoを使うことで関数の戻り値も型推論で完結させることができる．
+使用例を\cdref{cd:gen10}に示す．
+\lstinputlisting[caption=function return type inference,label=cd:gen10]{code/generic/10.cpp}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
