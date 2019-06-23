@@ -1,5 +1,8 @@
+#include <iostream>
 
 int main() {
-  int i = 2;
-  int t = i;
+  auto num = 2;
+  auto dbl = 6.4;
+  auto str = "Hello";
+  std::cout << num << " " << dbl << " " << str << " " << std::endl;
 }

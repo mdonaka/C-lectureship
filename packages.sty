@@ -7,8 +7,12 @@
 \usepackage{listings,jlisting}
 \usepackage{multirow}
 
+\renewcommand{\prepartname}{第 }
+\renewcommand{\thepart}{\arabic{part}}
+\renewcommand{\postpartname}{ 章}
+
 \def\scref#1{
-    \ref{#1}章
+    \ref{#1}節
 }
 
 \renewcommand{\lstlistingname}{Source.}
@@ -53,7 +57,9 @@
 	%タブの大きさ
  	tabsize = 4,
  	%キャプションの場所("tb"ならば上下両方に記載)
- 	captionpos = t
+ 	captionpos = t,
+    %スペースの表示を消す
+    showstringspaces=false
 }
 \makeatletter
 \newcommand{\subsubsubsection}{\@startsection{paragraph}{4}{\z@}%
