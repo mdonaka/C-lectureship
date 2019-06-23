@@ -1,0 +1,41 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{auto(C++11)}
+autoは型推論を行うためのキーワードであり，
+型の代わりに用いることで初期化子から型を推論する．
+実際の使用例を\cdref{cd:gen01}に示す．
+\lstinputlisting[caption=example of auto keyword,label=cd:gen01]{code/generic/01.cpp}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{autoの効果的な使いどころ}
+autoは非常に便利であるが，特に型名が長い場合等で絶大な効果を発揮する．
+例えば，for文でコンテナのイテレータを回す際はイテレータを変数にキャッチするが，その長い型を4字で記述することが出来る．
+さらに，\scref{sc:lambda}で説明するラムダ式を宣言する場合でも型を知る必要がなくなる．
+\lstinputlisting[caption=effective usage of auto,label=cd:gen02]{code/generic/02.cpp}
+
+なお補足程度ではあるが，\cdref{cd:gen03}に示すようにラムダ式は実装が同じであっても型が異なる．
+これはラムダ式が関数オブジェクトの一種であり宣言の度に異なるクラスのオブジェクトとして生成されるためである．
+このように宣言の度に変化する型を厳密に定義することは不可能のため，
+autoの重要さが際立つ．
+\lstinputlisting[caption=different type of lambda,label=cd:gen03]{code/generic/03.cpp}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{修飾を伴うauto}
+autoが推論するのは初期化子の型ではなく，
+あくまで代入するのに最低限必要な型ということに注意する必要がある．
+\cdref{cd:gen04}で示すように，
+constや参照が付与された型をそのまま推論すると
+推論された型もconstや参照が付与されるはずである．
+しかしながらautoにより推論された型はそれらの修飾が外れる．
+
+constや参照を付与した型宣言をしたい場合は，
+\cdref{cd:gen05}のようにautoに対して修飾することで実現できる．
+\lstinputlisting[caption=auto keyword with qualification,label=cd:gen04]{code/generic/04.cpp}
+\lstinputlisting[caption=add qualification to auto keyword,label=cd:gen05]{code/generic/05.cpp}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{initializer lists(C++11)}
+initializer listsは最も抽象化されたコンテナのようなものであり，
+$\{1,2,3\}$のような列を型推論した場合に発生する．
+vector等のコンテナ型の初期化をautoと$\{\textrm{hoge},\textrm{huga}\}$を用いてする場合，
+コンテナを明示しなければ型がinitializer listsと判定されてしまうため注意が必要である．
+\lstinputlisting[caption=feature of A,label=cd:gen06]{code/generic/06.cpp}
