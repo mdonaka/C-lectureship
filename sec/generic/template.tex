@@ -31,13 +31,27 @@ template <class 型名>
 テンプレート宣言後にクラスを宣言することで生成できる．
 クラステンプレートでは内部のあらゆる値の型で抽象化された型を使用できる．
 
-\lstinputlisting[caption=example of template function,label=cd:gen12]{code/generic/12.cpp}
+\lstinputlisting[caption=example of template class,label=cd:gen13]{code/generic/13.cpp}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection*{メンバテンプレート}
+メンバ関数をテンプレート化したのがメンバテンプレートである．
+テンプレート宣言後にメンバを宣言することで生成できる．
+クラス内の一部のメソッドだけをテンプレート化したいという場合で用いられる．
+またクラステンプレートとの共存も可能で，2重のテンプレートを持つメンバも定義できる．
 
+\lstinputlisting[caption=example of template member function,label=cd:gen14]{code/generic/14.cpp}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection*{エイリアステンプレート}
+エイリアステンプレートは型の別名定義をテンプレートを用いて行うものである．
+エイリアステンプレートはテンプレートクラスの型名を短く再定義する等
+の使い道がある．
+\lstinputlisting[caption=example of alias templates,label=cd:gen15]{code/generic/15.cpp}
 
+補足だが，エイリアステンプレートは特殊化が出来ないことを利用して，
+\cdref{cd:gen16}のようにユーザにエイリアスのみを提示して特殊化を防ぐテクニックがある．
+他にも，真偽値メタ関数の論理演算を簡潔に定義したりメタ関数をラップしたりする用途がある．
+実際に使用される場合はこれらの用途が主である．
+\lstinputlisting[caption=using alias templates to prevent specialization,label=cd:gen16]{code/generic/16.cpp}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{オーバーロード}
 

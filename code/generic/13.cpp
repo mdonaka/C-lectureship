@@ -11,8 +11,17 @@ class C {
 };
 
 int main() {
-  auto ins = C<int>(10);
-  auto m1 = ins.method1();
-  auto m2 = ins.method2(5);
-  std::cout << m1 << " " << m2 << std::endl;
+  {
+    auto ins = C<int>(10);
+    auto m1 = ins.method1();
+    auto m2 = ins.method2(5);
+    std::cout << m1 << " " << m2 << std::endl;
+  }
+
+  {
+    auto ins = C<char>('v');
+    auto m1 = ins.method1();
+    auto m2 = ins.method2('x');
+    std::cout << m1 << " " << m2 << std::endl;
+  }
 }
