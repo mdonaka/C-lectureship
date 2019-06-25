@@ -54,12 +54,36 @@ template <class 型名>
 \lstinputlisting[caption=using alias templates to prevent specialization,label=cd:gen16]{code/generic/16.cpp}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{オーバーロード}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{オーバーロードの順番}
+名前が同じで引数や戻り値が異なる関数やメソッド等を定義することをオーバーロードと呼ぶ．
+オーバーロードはコンパイル時に全て解決するため，
+実行中の関数切り替えのようなことはできない．
+\lstinputlisting[caption=various overloads,label=cd:gen17]{code/generic/17.cpp}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{特殊化}
 
+\lstinputlisting[caption=example of template Specialization,label=cd:gen20]{code/generic/18.cpp}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{部分特殊化}
+\lstinputlisting[caption=example of partial template specialization,label=cd:gen20]{code/generic/19.cpp}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{オーバーロードの優先度}
+テンプレート等を駆使するようになるとオーバーロードをしていても複数の呼び出し候補が存在してしまうことがある．
+その場合は以下の優先度で優先度の高い関数が呼ばれる．
+例を\cdref{cd:gen21}に示す．
+\begin{enumerate}
+    \item 通常の呼び出し(修飾込)
+    \item 特殊化テンプレート
+    \item テンプレート
+    \item 暗黙的な型変換で呼び出し可能なもの
+    \item 可変長引数
+\end{enumerate}
+
+ここで注意すべき点として，同じ優先度内でオーバーロードの解決ができない場合はコンパイルエラーとなる．
+例を\cdref{cd:gen20}に示す．
+オーバーロードを記述するときは異なる優先度で解決できないか，
+優先度内で衝突が起きてないか，等をしっかり確認する．
+\lstinputlisting[caption=overload order,label=cd:gen21]{code/generic/21.cpp}
+\lstinputlisting[caption=overload collision,label=cd:gen20]{code/generic/20.cpp}
