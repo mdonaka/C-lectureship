@@ -1,23 +1,17 @@
-\contentsline {part}{第 1 章\hspace {1zw}ジェネリックプログラミング}{2}
-\contentsline {section}{\numberline {1}auto(C++11)}{2}
-\contentsline {subsection}{\numberline {1.1}autoの効果的な使いどころ}{2}
-\contentsline {subsection}{\numberline {1.2}修飾を伴うauto}{3}
-\contentsline {subsection}{\numberline {1.3}initializer lists(C++11)}{3}
-\contentsline {subsection}{\numberline {1.4}関数の戻り値型推論(C++14)}{4}
-\contentsline {section}{\numberline {2}decltype(C++11)}{4}
-\contentsline {subsection}{\numberline {2.1}修飾を伴うdecltype}{5}
-\contentsline {subsection}{\numberline {2.2}修飾外し}{5}
-\contentsline {subsection}{\numberline {2.3}decltype(auto)(C++14)}{5}
-\contentsline {section}{\numberline {3}テンプレート}{6}
-\contentsline {subsection}{\numberline {3.1}基本のテンプレート}{6}
-\contentsline {subsection}{\numberline {3.2}オーバーロード}{8}
-\contentsline {subsubsection}{\numberline {3.2.1}特殊化}{9}
-\contentsline {subsubsection}{\numberline {3.2.2}部分特殊化}{9}
-\contentsline {subsubsection}{\numberline {3.2.3}オーバーロードの優先度}{9}
-\contentsline {section}{\numberline {4}SFINAE(C++11)}{10}
-\contentsline {subsection}{\numberline {4.1}メタ関数}{11}
-\contentsline {subsection}{\numberline {4.2}enable\_if}{11}
-\contentsline {subsection}{\numberline {4.3}自作メタ関数}{11}
-\contentsline {subsubsection}{\numberline {4.3.1}True,False type}{11}
-\contentsline {section}{\numberline {5}ラムダ(C++11)}{11}
-\contentsline {subsection}{\numberline {5.1}ジェネリックラムダ(C++14)}{11}
+\contentsline {part}{第 1 章\hspace {1zw}クラス}{2}
+\contentsline {section}{\numberline {1}アクセス修飾子}{2}
+\contentsline {section}{\numberline {2}コンストラクタ}{2}
+\contentsline {subsection}{\numberline {2.1}copy コンストラクタ}{2}
+\contentsline {subsection}{\numberline {2.2}move コンストラクタ}{3}
+\contentsline {subsection}{\numberline {2.3}noexcept}{3}
+\contentsline {subsection}{\numberline {2.4}暗黙の宣言}{3}
+\contentsline {section}{\numberline {3}不変オブジェクト}{3}
+\contentsline {subsection}{\numberline {3.1}const変数}{3}
+\contentsline {subsection}{\numberline {3.2}const method}{4}
+\contentsline {section}{\numberline {4}カプセル化}{4}
+\contentsline {subsection}{\numberline {4.1}static method}{4}
+\contentsline {subsection}{\numberline {4.2}namespace}{5}
+\contentsline {section}{\numberline {5}継承}{5}
+\contentsline {subsection}{\numberline {5.1}仮想デストラクタ}{5}
+\contentsline {subsection}{\numberline {5.2}移譲}{5}
+\contentsline {section}{\numberline {6}constexprクラス}{5}
