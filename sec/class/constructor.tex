@@ -1,0 +1,51 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{コンストラクタ}
+クラスのインスタンス化はコンストラクタによって行われる．
+また，クラスが破棄される際はデストラクタが呼ばれる．
+それぞれ\cdref{cd:cl02}のように宣言される．
+\lstinputlisting[caption=constructor ans destoructor,label=cd:cl02]{code/class/02.cpp}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{copy コンストラクタ}
+C++ではcopyによってインスタンスを生成する際の特殊なコンストラクタを定義できる．
+インスタンスのcopyは2種類あり，
+引数としてインスタンスを渡してcopyするcopyコンストラクタと
+インスタンスを代入する形で渡すcopy代入演算子である．
+それぞれ\cdref{cd:cl03}のように宣言される．
+\lstinputlisting[caption=copy constructor,label=cd:cl03]{code/class/03.cpp}
+
+copy代入演算子は定義する上で自己代入に注意する必要がある．
+自己代入チェックを怠った場合，ポインタ周りで不具合が起きてしまう．
+自己代入の防止は条件分岐によるチェックをするか，
+\cdref{cd:cl04}に示すようなswapを用いたテクニックを使うと良いだろう．
+また，次節で示すmove代入演算子を用いたテクニックもあり，
+可能であればこのテクニックを用いるのが良い．
+\lstinputlisting[caption=prevent self substitution by using swap,label=cd:cl04]{code/class/04.cpp}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{move コンストラクタ}
+コンストラクタはcopyだけでなくmoveを用いたコンストラクタも定義できる．
+インスタンスのmoveもcopyと同様2種類あり，
+引数としてインスタンスを渡してmoveするmoveコンストラクタと
+インスタンスを代入する形で渡すmove代入演算子である．
+それぞれ\cdref{cd:cl05}のように宣言される．
+\lstinputlisting[caption=move constructor,label=cd:cl05]{code/class/05.cpp}
+
+また，move代入演算子を適切に定義できていれば，
+前節で述べたコピー代入演算子における自己代入を
+\cdref{cd:cl06}のようなテクニックで回避することができる．
+\lstinputlisting[caption=prevent self substitution by using move,label=cd:cl06]{code/class/06.cpp}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{noexcept}
+\lstinputlisting[caption=all constructor and destoructor,label=cd:cl07]{code/class/07.cpp}
+% move_if_norxcept
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{暗黙の宣言}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
