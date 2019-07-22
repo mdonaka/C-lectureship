@@ -1,17 +1,36 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{不変オブジェクト}
+詳細は省くが，
+プログラミングにおいては一般的にあらゆるオブジェクトは不変であるべきとされている．
+C+＋でクラスを作成する場合もその思想を遵守し不変となるような設計にすべきである．
+本節ではクラスを変更を防ぐための手法を紹介する．
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{const変数}
+クラスのメンバ変数をconst修飾すると，初期化後の変更を防ぐことができる．
+全てのメンバをconst修飾するとそのクラスは不変クラスと言えるだろう．
+
+ただし，const修飾したメンバ変数は\cdref{cd:cl08}のようにコンストラクタ内での初期化が出来なくなる．
+そのため，C++でメンバ変数の初期化したい場合はconst変数も初期化することが出来る初期化子リストを使う．
+使用例を\cdref{cd:cl09}に示す．
 \lstinputlisting[caption=const member initialize error version,label=cd:cl08]{code/class/08.cpp}
 \lstinputlisting[caption=const member initialize,label=cd:cl09]{code/class/09.cpp}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{const method}
+constでないメンバ変数があった場合，その変数はあらゆるmethodで変更することが出来る．
+この時methodをconst修飾することで，
+\cdref{cd:cl08}のようにmethodがメンバ変数を変更しないことを明示することが出来る．
 \lstinputlisting[caption=const method,label=cd:cl10]{code/class/10.cpp}
+
+この機能はmutableクラスをconst宣言してインスタンス化した場合に必須となる．
+constなオブジェクトは不変でなくてはならないため，
+変更可能性のあるmethodを呼び出すことが出来ない．
+そのため，methodを明示的にconstであるして呼び出しを許可する．
+例を\cdref{cd:cl11}に示す．
 \lstinputlisting[caption=use const member's method,label=cd:cl11]{code/class/11.cpp}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
