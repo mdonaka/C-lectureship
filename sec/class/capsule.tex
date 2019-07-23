@@ -10,12 +10,26 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{static method}
+\cdref{cd:cl12}を見ると，methodという名前のmethodが宣言されている．
+これはクラス内メンバ関数のため，インスタンス化される度に生成される．
+しかしながら，methodはメンバ変数を参照していないため，全てのインスタンスで同じ挙動を起こす．
+つまり，インスタンスの個数だけmethodが生成されるのは非効率的である．
+そこで，\cdref{cd:cl13}のようにmethodをstatic宣言することで，
+無駄なmethodの生成を防ぐテクニックがある．
 \lstinputlisting[caption=wasteful class,label=cd:cl12]{code/class/12.cpp}
 \lstinputlisting[caption=improved class,label=cd:cl13]{code/class/13.cpp}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{namespace}
+前節の\cdref{cd:cl14}は無駄な生成を防いではいるものの，
+使用しないはずのメンバ変数をstatic methodが参照できてしまうため，
+実はカプセル化がそこまで強くはない．
+そこで，メンバ変数を一切使用しないmethodをクラスの外で定義するというテクニックを用いる．
+そうすることで，メンバ変数に干渉できるmethodが減ってカプセル化がより強化される．
+ただし，このテクニックを用いると関数がグローバル空間で宣言されてしまうため，
+\cdref{cd:cl14}のようにnamespaceを用いてスコープを制御する必要がある．
 \lstinputlisting[caption=improved class with namespace,label=cd:cl14]{code/class/14.cpp}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
