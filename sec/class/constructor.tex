@@ -41,11 +41,46 @@ copy代入演算子は定義する上で自己代入に注意する必要があ�
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{noexcept}
+noexceptは関数が例外を送出しないことを明示的に宣言するキーワードである．
+例外を送出しない保証があることでコンパイル時点でパフォーマンスの向上が見込める．
+またvectorのemplace等，
+一部の関数はnoexceptの有無により挙動が変わることがある(内部でmove\_if\_norxcept関数を用いているため)．
+例を\cdref{cd:cl15}に示す．
+
+このことから，自作クラスにおけるmoveコンストラクタにはnoexceptを付与するのが一般的である．
+以上を踏まえた自作クラスの一般系は\cdref{cd:cl07}のようになる．
+\lstinputlisting[caption=noexcept move constructor,label=cd:cl15]{code/class/15.cpp}
 \lstinputlisting[caption=all constructor and destoructor,label=cd:cl07]{code/class/07.cpp}
-% move_if_norxcept
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{暗黙の宣言}
+様々なコンストラクタを紹介したが，これらは場合に応じて暗黙的に宣言されることがある．
+\tbref{tb:decl}に暗黙的な宣言が行われる場合を示す．
+ただし，表は左のコンストラクタが宣言された場合にそれより右のコンストラクタの宣言がどうなるかを示している．
+また，[deprecated]は暗黙的に宣言されるが推奨されないことを表す．
+
+これらから以下の4点が言える．
+\begin{itemize}
+  \item 知識がない場合は通常のコンストラクタのみ宣言するか，全て宣言するかどちらかが良い
+  \item defaultコンストラクタはいずれかを宣言した場合に暗黙的な宣言がされなくなる
+  \item デストラクタを宣言する場合はcopy，moveコンストラクタを必ず宣言する
+  \item copy，moveコンストラクタのどちらかを宣言した場合，もう一方も明示的に宣言するのが良い
+\end{itemize}
+
+\begin{table}[tb]
+  \begin{center}
+  \caption{Implicit declaration of constructor\cite{decl2016}}
+  \label{tb:decl}
+  \begin{tabular}{|c||c|c|c|c|}\hline
+      & default ctor & copy ctor & move ctor & dtor \\ \hline \hline
+      & default & default & defualt & default \\ \hline
+      any ctor & no decl & default & defualt & default \\ \hline
+      copy ctor & no decl & & no decl & default \\ \hline
+      move ctor & no decl & [deprecated] & & default \\ \hline
+      dtor & default & [deprecated] & [deprecated] & \\ \hline
+  \end{tabular}
+  \end{center}
+\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

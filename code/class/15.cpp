@@ -1,12 +1,17 @@
+#include <vector>
 struct Class1 {
-	int m_num;
-	Class1(int num) :m_num(num) {}
-
-	void method1() {
-		m_num = 10;
-	}
-
-	void method2() const {
-		m_num = 10; // ERROR
-	}
+	Class1();
+	Class1(Class1&&) {}
 };
+struct Class2 {
+	Class2();
+	Class2(Class2&&) noexcept {}
+};
+
+int main() {
+	std::vector<Class1> v1;
+	v1.emplace_back(Class1()); //copy
+
+	std::vector<Class2> v2;
+	v2.emplace_back(Class2()); //move
+}
